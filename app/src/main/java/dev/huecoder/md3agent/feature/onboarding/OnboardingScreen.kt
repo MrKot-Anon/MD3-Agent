@@ -178,7 +178,7 @@ private fun StepPage(step: OnboardingStep, state: OnboardingState, viewModel: On
         OnboardingStep.DONE -> DonePage(state, departing)
         OnboardingStep.ASSISTANT -> AssistantPage()
         OnboardingStep.PERMISSIONS -> PermissionsPage(state, viewModel::refreshPermissions)
-        OnboardingStep.PROVIDER -> ProviderPage(state, viewModel::connectProvider, viewModel::selectModel, onCustomProvider, onLater)
+        OnboardingStep.PROVIDER -> ProviderPage(state, viewModel::selectModel, onCustomProvider, onLater)
         OnboardingStep.FIRST_AGENT -> FirstAgentPage(state, viewModel::pickShape, viewModel::pickTint, viewModel::renameAgent)
     }
 }

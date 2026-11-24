@@ -1011,6 +1011,9 @@
     <string name="onboarding_ability_code_caption">Reads files, runs scripts.</string>
     <string name="onboarding_provider_title">Connect an AI</string>
     <string name="onboarding_provider_body">It needs a key from an AI service.</string>
+    <string name="onboarding_local_endpoint_hint">Add your local model endpoint to start chatting. No model is preconfigured.</string>
+    <string name="onboarding_local_endpoint_action">Configure local endpoint</string>
+    <string name="provider_local_endpoint_required">Use http://172.16.88.10:8080/v1</string>
     <string name="onboarding_provider_has_key">I have a key</string>
     <string name="onboarding_provider_no_key">I do not have a key</string>
     <string name="onboarding_provider_key_label">API key</string>

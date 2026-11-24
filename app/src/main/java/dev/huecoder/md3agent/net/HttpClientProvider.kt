@@ -49,4 +49,7 @@ class HttpClientProvider(
 internal object LocalEndpointPolicy {
     fun permits(url: HttpUrl): Boolean =
         url.scheme == "http" && url.host == "172.16.88.10" && url.port == 8080 && url.encodedPath.startsWith("/v1/")
+
+    fun permitsBaseUrl(url: HttpUrl): Boolean =
+        url.scheme == "http" && url.host == "172.16.88.10" && url.port == 8080 && url.encodedPath.trimEnd('/') == "/v1"
 }

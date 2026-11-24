@@ -43,18 +43,18 @@ fun ModelsScreen(onBack: () -> Unit, onEditProvider: (providerId: String?) -> Un
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
             item { SectionHeader(stringResource(R.string.settings_section_providers)) }
-            providerItems(current)
+            providerItems(current, onEditProvider)
         }
     }
 }
 
-private fun LazyListScope.providerItems(settings: AppSettings) {
-    val count = settings.providers.size
+private fun LazyListScope.providerItems(settings: AppSettings, onEditProvider: (String?) -> Unit) {
+    val count = settings.providers.size + 1
     itemsIndexed(settings.providers, key = { _, provider -> provider.id }) { index, provider ->
         val isActive = settings.activeSelection?.providerId == provider.id
         val remembered = settings.rememberedModels[provider.id]?.modelId
         SegmentedListItem(
-            onClick = {},
+            onClick = { onEditProvider(provider.id) },
             shapes = ListItemDefaults.segmentedShapes(index, count),
             colors = groupedListColors(),
             leadingContent = { ShapeBadge(MaterialSymbols.Rounded.Hub) },
@@ -71,5 +71,19 @@ private fun LazyListScope.providerItems(settings: AppSettings) {
                 null
             },
         ) { Text(provider.name, style = MaterialTheme.typography.titleMediumEmphasized) }
+    }
+    item(key = "add-provider") {
+        SegmentedListItem(
+            onClick = { onEditProvider(null) },
+            shapes = ListItemDefaults.segmentedShapes(count - 1, count),
+            colors = groupedListColors(),
+            leadingContent = {
+                ShapeBadge(
+                    MaterialSymbols.Rounded.Add,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
+            },
+        ) { Text(stringResource(R.string.settings_add_provider), style = MaterialTheme.typography.titleMediumEmphasized) }
     }
 }

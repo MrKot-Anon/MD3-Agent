@@ -13,5 +13,7 @@ class LocalEndpointPolicyTest {
         assertFalse(LocalEndpointPolicy.permits("https://172.16.88.10:8080/v1/models".toHttpUrl()))
         assertFalse(LocalEndpointPolicy.permits("http://172.16.88.10:8080/admin".toHttpUrl()))
         assertFalse(LocalEndpointPolicy.permits("https://api.github.com/v1/models".toHttpUrl()))
+        assertTrue(LocalEndpointPolicy.permitsBaseUrl("http://172.16.88.10:8080/v1".toHttpUrl()))
+        assertFalse(LocalEndpointPolicy.permitsBaseUrl("https://api.openai.com/v1".toHttpUrl()))
     }
 }

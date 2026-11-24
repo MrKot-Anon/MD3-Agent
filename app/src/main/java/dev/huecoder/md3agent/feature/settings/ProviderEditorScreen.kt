@@ -44,22 +44,13 @@ fun ProviderEditorScreen(providerId: String?, onDone: () -> Unit) {
         Column(Modifier.settingsPage(padding), verticalArrangement = Arrangement.spacedBy(EDITOR_GROUP_GAP)) {
             CardGroup {
                 card { shape ->
-                    FormatCard(
-                        formats = ApiFormat.CHAT,
-                        selected = current.format,
-                        hint = stringResource(R.string.provider_format_hint),
-                        onSelect = { format -> viewModel.edit { it.withFormat(format) } },
-                        shape = shape,
-                    )
-                }
-                card { shape ->
                     EndpointCard(
                         name = current.name,
                         onName = { value -> viewModel.edit { it.copy(name = value) } },
                         baseUrl = current.baseUrl,
                         onBaseUrl = { value -> viewModel.edit { it.copy(baseUrl = value) } },
                         baseUrlError = current.baseUrlError,
-                        defaultBaseUrl = current.format.defaultBaseUrl,
+                        defaultBaseUrl = "http://172.16.88.10:8080/v1",
                         apiKey = current.apiKey,
                         onApiKey = { value -> viewModel.edit { it.copy(apiKey = value) } },
                         shape = shape,

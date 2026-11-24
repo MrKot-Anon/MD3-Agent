@@ -1,11 +1,10 @@
 # MD3 Agent — local-network fork
 
-This fork runs the Android assistant against one local OpenAI-compatible endpoint:
+This fork allows the Android assistant to contact one local OpenAI-compatible endpoint:
 
 - API: `http://172.16.88.10:8080/v1`
-- Default model: `minimax-m2.5`
 
-The app's HTTP client permits only this host, port and `/v1/` path. Redirects are disabled. The model profile is fixed in the app, and the model screen no longer offers cloud providers.
+No provider or model is preconfigured. Add the local endpoint in Models after installation and select a model returned by that server. The app's HTTP client permits only this host, port and `/v1/` path. Redirects are disabled. Cloud provider choices are hidden from setup.
 
 Web search, webpage reading, weather, MCP servers, shell and Python agent tools, GitHub update checks, remote favicons and remote image loading are disabled. The remaining tools operate on local chats, files, reminders, memory and the phone. Links opened in a separate browser are outside the app's network policy.
 

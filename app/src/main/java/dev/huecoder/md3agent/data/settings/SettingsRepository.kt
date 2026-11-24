@@ -33,9 +33,8 @@ class SettingsRepository(
     private val store: DataStore<Preferences>,
     private val cipher: TextCipher,
     scope: CoroutineScope,
-    private val localOnly: Boolean = false,
 ) {
-    constructor(context: Context, cipher: TextCipher, scope: CoroutineScope) : this(context.settingsStore, cipher, scope, localOnly = true)
+    constructor(context: Context, cipher: TextCipher, scope: CoroutineScope) : this(context.settingsStore, cipher, scope)
 
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = true }
     private val providerListSerializer = ListSerializer(ProviderProfile.serializer())
@@ -145,21 +144,11 @@ class SettingsRepository(
     }
 
     private fun toAppSettings(prefs: Preferences): AppSettings {
-        val providers = if (localOnly) {
-            listOf(ProviderProfile("local-model", "Local model", "http://172.16.88.10:8080/v1"))
-        } else {
-            decodeProviders(prefs[Keys.PROVIDERS_ENCRYPTED])
-        }
+        val providers = decodeProviders(prefs[Keys.PROVIDERS_ENCRYPTED])
         val activeProvider = prefs[Keys.ACTIVE_PROVIDER]
         val remembered = decodeRemembered(prefs)
-        val selection = if (localOnly) {
-            activeSelectionOf(prefs)?.takeIf { it.providerId == "local-model" }
-                ?: remembered["local-model"]?.selectionIn("local-model")
-                ?: ModelSelection("local-model", "minimax-m2.5")
-        } else {
-            activeSelectionOf(prefs)?.takeIf { chosen -> providers.any { it.id == chosen.providerId } }
-                ?: providers.firstNotNullOfOrNull { provider -> remembered[provider.id]?.selectionIn(provider.id) }
-        }
+        val selection = activeSelectionOf(prefs)?.takeIf { chosen -> providers.any { it.id == chosen.providerId } }
+            ?: providers.firstNotNullOfOrNull { provider -> remembered[provider.id]?.selectionIn(provider.id) }
         return AppSettings(
             providers = providers,
             activeSelection = selection,

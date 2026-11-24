@@ -1014,6 +1014,9 @@
     <string name="onboarding_ability_code_caption">Читает файлы, запускает скрипты.</string>
     <string name="onboarding_provider_title">Подключите ИИ</string>
     <string name="onboarding_provider_body">Для ответов нужен ключ от сервиса ИИ.</string>
+    <string name="onboarding_local_endpoint_hint">Добавьте локальный адрес модели, чтобы начать чат. Модель не предустановлена.</string>
+    <string name="onboarding_local_endpoint_action">Настроить локальный адрес</string>
+    <string name="provider_local_endpoint_required">Используйте http://172.16.88.10:8080/v1</string>
     <string name="onboarding_provider_has_key">У меня есть ключ</string>
     <string name="onboarding_provider_no_key">У меня нет ключа</string>
     <string name="onboarding_provider_key_label">Ключ API</string>

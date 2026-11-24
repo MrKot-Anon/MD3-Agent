@@ -8,6 +8,7 @@ import dev.huecoder.md3agent.data.settings.HeaderEntry
 import dev.huecoder.md3agent.data.settings.ProviderProfile
 import dev.huecoder.md3agent.data.settings.SettingsRepository
 import dev.huecoder.md3agent.data.models.ModelCatalog
+import dev.huecoder.md3agent.net.LocalEndpointPolicy
 import dev.huecoder.md3agent.ui.text.UiText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
@@ -26,7 +27,11 @@ data class ProviderForm(
     fun withFormat(next: ApiFormat) = copy(format = next, baseUrl = next.adoptBaseUrl(baseUrl))
 
     val baseUrlError: UiText?
-        get() = if (baseUrl.isBlank() || baseUrl.trim().toHttpUrlOrNull() != null) null else UiText.Resource(R.string.provider_base_url_invalid)
+        get() = if (baseUrl.isBlank() || baseUrl.trim().toHttpUrlOrNull()?.let(LocalEndpointPolicy::permitsBaseUrl) == true) {
+            null
+        } else {
+            UiText.Resource(R.string.provider_local_endpoint_required)
+        }
 
     val canSave: Boolean
         get() = name.isNotBlank() && baseUrl.isNotBlank() && baseUrlError == null
