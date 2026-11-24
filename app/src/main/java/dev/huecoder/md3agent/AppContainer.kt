@@ -174,9 +174,6 @@ class AppContainer(context: Context) {
 
     val tools = ToolRegistry(
         listOf(
-            WebSearchTool(WebSearcher(httpClients)),
-            ReadWebpageTool(PageFetcher(httpClients)),
-            WeatherTool(httpClients),
             ReadScreenTool(screenContext),
             PhoneScreenTool(phoneControl),
             PhoneScreenshotTool(phoneControl, attachments),
@@ -190,8 +187,6 @@ class AppContainer(context: Context) {
             MemoryUpdateTool(memories),
             MemoryDeleteTool(memories),
             MemorySearchTool(memories),
-            RunCommandTool(shellAccess),
-            RunPythonTool(python, shellAccess.workspace, phoneControl),
             ListFilesTool(deviceFiles),
             ReadFileTool(deviceFiles, attachments),
             WriteFileTool(deviceFiles),
@@ -206,7 +201,7 @@ class AppContainer(context: Context) {
             SearchMessagesTool(chats),
             ExportChatTool(chats, deviceFiles),
         ),
-        sources = listOf(mcp),
+        sources = emptyList(),
     )
 
     private suspend fun saveMcpSession(serverId: String, session: McpOAuthSession) = settings.updateTools { tools ->
@@ -236,9 +231,6 @@ class AppContainer(context: Context) {
     )
 
     init {
-        applicationScope.launch {
-            settings.settings.map { it.tools.mcpServers }.distinctUntilChanged().collect(mcp::sync)
-        }
         applicationScope.launch {
             settings.settings.map { it.tools.phoneUse }.distinctUntilChanged().collect { phoneControl.session.settings.value = it }
         }

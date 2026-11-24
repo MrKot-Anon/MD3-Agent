@@ -18,12 +18,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -36,34 +34,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Code
 import com.composables.icons.materialsymbols.rounded.Gavel
 import com.composables.icons.materialsymbols.rounded.Open_in_new
 import com.composables.icons.materialsymbols.rounded.Package_2
-import com.composables.icons.materialsymbols.rounded.System_update
 import dev.huecoder.md3agent.BuildConfig
 import dev.huecoder.md3agent.R
 import dev.huecoder.md3agent.data.updates.UpdateChecker
-import dev.huecoder.md3agent.data.updates.UpdateStatus
 import dev.huecoder.md3agent.ui.components.SettingsScaffold
 import dev.huecoder.md3agent.ui.components.ShapeBadge
-import dev.huecoder.md3agent.ui.components.appViewModel
 import dev.huecoder.md3agent.ui.components.groupedListColors
 
 @Composable
 fun AboutScreen(onBack: () -> Unit, onSecret: () -> Unit) {
-    val viewModel = appViewModel { AboutViewModel(it.updates) }
-    val check by viewModel.check.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val updateUrl = ((check as? UpdateCheck.Done)?.status as? UpdateStatus.Available)?.let { it.apkUrl ?: it.pageUrl }
     val links = listOf(
         AboutLink(MaterialSymbols.Rounded.Code, R.string.about_source, R.string.about_source_summary, UpdateChecker.REPOSITORY_URL),
         AboutLink(MaterialSymbols.Rounded.Gavel, R.string.about_license, R.string.about_license_summary, "${UpdateChecker.REPOSITORY_URL}/blob/main/LICENSE"),
         AboutLink(MaterialSymbols.Rounded.Package_2, R.string.about_third_party, R.string.about_third_party_summary, "${UpdateChecker.REPOSITORY_URL}/blob/main/THIRD_PARTY.md"),
     )
-    val total = links.size + 1
+    val total = links.size
 
     SettingsScaffold(stringResource(R.string.settings_about), onBack) { padding ->
         Column(
@@ -71,27 +62,10 @@ fun AboutScreen(onBack: () -> Unit, onSecret: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
             AppIdentity(onSecret, Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp))
-            SegmentedListItem(
-                onClick = { if (updateUrl != null) context.openUrl(updateUrl) else viewModel.checkForUpdates() },
-                shapes = ListItemDefaults.segmentedShapes(0, total),
-                colors = groupedListColors(),
-                leadingContent = { ShapeBadge(MaterialSymbols.Rounded.System_update) },
-                supportingContent = { Text(updateSummary(check)) },
-                trailingContent = if (check == UpdateCheck.Running) {
-                    { LoadingIndicator(Modifier.size(32.dp)) }
-                } else {
-                    null
-                },
-            ) {
-                Text(
-                    stringResource(if (updateUrl != null) R.string.about_update_download else R.string.about_check_updates),
-                    style = MaterialTheme.typography.titleMediumEmphasized,
-                )
-            }
             links.forEachIndexed { index, link ->
                 SegmentedListItem(
                     onClick = { context.openUrl(link.url) },
-                    shapes = ListItemDefaults.segmentedShapes(index + 1, total),
+                    shapes = ListItemDefaults.segmentedShapes(index, total),
                     colors = groupedListColors(),
                     leadingContent = { ShapeBadge(link.icon) },
                     supportingContent = { Text(stringResource(link.summary)) },
@@ -127,18 +101,6 @@ private fun AppIdentity(onSecret: () -> Unit, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-    }
-}
-
-@Composable
-private fun updateSummary(check: UpdateCheck): String = when (check) {
-    UpdateCheck.Idle -> stringResource(R.string.about_update_idle)
-    UpdateCheck.Running -> stringResource(R.string.about_update_running)
-    is UpdateCheck.Done -> when (val status = check.status) {
-        is UpdateStatus.UpToDate -> stringResource(R.string.about_update_latest, status.latest)
-        is UpdateStatus.Available -> stringResource(R.string.about_update_available, status.version)
-        UpdateStatus.NotPublished -> stringResource(R.string.about_update_not_published)
-        UpdateStatus.Unreachable -> stringResource(R.string.about_update_unreachable)
     }
 }
 

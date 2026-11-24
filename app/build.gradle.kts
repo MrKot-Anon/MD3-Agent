@@ -24,7 +24,10 @@ android {
         versionCode = 12
         versionName = "0.9.6"
 
-        ndk { abiFilters += "arm64-v8a" }
+        ndk {
+            abiFilters += "arm64-v8a"
+            if (project.findProperty("includeX86Emulator") == "true") abiFilters += "x86_64"
+        }
     }
 
     signingConfigs {
@@ -105,7 +108,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
-    implementation(libs.okhttp.dnsoverhttps)
 
     implementation(libs.markdown.m3)
     implementation(libs.markdown.code)
@@ -114,7 +116,6 @@ dependencies {
     implementation(libs.jlatexmath.cyrillic)
     implementation(libs.material.kolor)
     implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)
     implementation(libs.dyn4j)

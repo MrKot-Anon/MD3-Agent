@@ -37,7 +37,7 @@ class ChatCompletionClientTest {
     @Before
     fun setUp() {
         server.start()
-        client = ChatCompletionClient(HttpClientProvider(flowOf(NetworkSettings()), TestScope()))
+        client = ChatCompletionClient(HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true }))
     }
 
     @After
@@ -215,7 +215,7 @@ class ChatCompletionClientTest {
     @Test
     fun `cancelling the collector aborts a request the server never answers`() = runBlocking {
         server.enqueue(MockResponse.Builder().onResponseStart(SocketEffect.Stall).build())
-        val httpClients = HttpClientProvider(flowOf(NetworkSettings()), TestScope())
+        val httpClients = HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true })
         val collecting = launch(Dispatchers.Default) { ChatCompletionClient(httpClients).stream(provider(), "m", turns).collect() }
         server.takeRequest()
         val dispatcher = httpClients.current().dispatcher

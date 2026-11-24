@@ -103,7 +103,7 @@ class CustomSearchApiTest {
     @Test
     fun `the searcher sends the custom request and reads the answer`() = runTest {
         server.enqueue(MockResponse.Builder().body("""{"results": [{"title": "Hit", "url": "https://hit.example", "highlights": ["found it"]}]}""").build())
-        val searcher = WebSearcher(HttpClientProvider(flowOf(NetworkSettings()), TestScope()))
+        val searcher = WebSearcher(HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true }))
         val settings = SearchSettings(backend = SearchBackend.CUSTOM, custom = exa.copy(url = server.url("/search").toString()))
 
         val hits = searcher.search("exa query", 3, settings)

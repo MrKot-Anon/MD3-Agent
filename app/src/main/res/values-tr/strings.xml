@@ -641,7 +641,7 @@
     <string name="about_update_not_published">Henüz herkese açık sürüm yok</string>
     <string name="about_update_unreachable">GitHub’a ulaşılamadı, daha sonra tekrar dene</string>
     <string name="about_source">Kaynak kodu</string>
-    <string name="about_source_summary">github.com/huecoder/md3-agent</string>
+    <string name="about_source_summary">github.com/MrKot-Anon/MD3-Agent</string>
     <string name="about_license">Lisans</string>
     <string name="about_license_summary">GNU GPL v3.0</string>
     <string name="about_third_party">Üçüncü taraf varlıkları</string>

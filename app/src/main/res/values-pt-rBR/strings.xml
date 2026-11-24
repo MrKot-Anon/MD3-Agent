@@ -650,7 +650,7 @@
     <string name="about_update_not_published">Ainda não há versões públicas</string>
     <string name="about_update_unreachable">Não foi possível acessar o GitHub, tente de novo mais tarde</string>
     <string name="about_source">Código-fonte</string>
-    <string name="about_source_summary">github.com/huecoder/md3-agent</string>
+    <string name="about_source_summary">github.com/MrKot-Anon/MD3-Agent</string>
     <string name="about_license">Licença</string>
     <string name="about_license_summary">GNU GPL v3.0</string>
     <string name="about_third_party">Recursos de terceiros</string>

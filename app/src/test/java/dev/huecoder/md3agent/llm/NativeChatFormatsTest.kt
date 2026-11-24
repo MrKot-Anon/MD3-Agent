@@ -29,7 +29,7 @@ class NativeChatFormatsTest {
     @Before
     fun setUp() {
         server.start()
-        client = ChatCompletionClient(HttpClientProvider(flowOf(NetworkSettings()), TestScope()))
+        client = ChatCompletionClient(HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true }))
     }
 
     @After

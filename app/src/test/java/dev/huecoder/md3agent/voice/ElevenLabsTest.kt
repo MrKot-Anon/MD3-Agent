@@ -38,7 +38,7 @@ class ElevenLabsTest {
     @Before
     fun setUp() {
         server.start()
-        httpClients = HttpClientProvider(flowOf(NetworkSettings()), TestScope())
+        httpClients = HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true })
     }
 
     @After

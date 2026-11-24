@@ -24,7 +24,7 @@ class PageFetcherTest {
     @Before
     fun setUp() {
         server.start()
-        fetcher = PageFetcher(HttpClientProvider(flowOf(NetworkSettings()), TestScope()))
+        fetcher = PageFetcher(HttpClientProvider(flowOf(NetworkSettings()), TestScope(), { true }))
     }
 
     @After

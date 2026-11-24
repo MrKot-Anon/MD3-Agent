@@ -78,8 +78,6 @@ fun MainScreen(
         scope.launch { drawerState.close() }
         onOpenCollection(filter)
     }
-    val updatePrompt = appViewModel { UpdatePromptViewModel(it.updates, it.settings) }
-    val updateOffer by updatePrompt.offer.collectAsStateWithLifecycle()
     var expanded by rememberSaveable { mutableStateOf(true) }
     val thresholdPx = with(LocalDensity.current) { COLLAPSE_DISTANCE.toPx() }
     val collapseOnScroll = remember(thresholdPx) { CollapseOnScroll(thresholdPx) { expanded = it } }
@@ -102,7 +100,6 @@ fun MainScreen(
 
     BackHandler(enabled = tab != MainTab.CHATS) { open(MainTab.CHATS) }
 
-    updateOffer?.let { UpdatePromptDialog(it, updatePrompt::dismiss) }
 
     CompositionLocalProvider(LocalTabReselects provides reselects) {
         ModalNavigationDrawer(

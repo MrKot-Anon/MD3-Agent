@@ -87,13 +87,7 @@ fun ToolSettingsScreen(onBack: () -> Unit) {
                     folds = folds,
                     query = query,
                     sectionModifier = { category -> anchors.anchor(category) },
-                ) { category ->
-                    if (category == ToolCategory.WEB) {
-                        CardGroup(Modifier.padding(top = SERVICE_GROUP_GAP)) { searchServiceCards(current.search, folds) { tools = current.copy(search = it) } }
-                        CardGroup(Modifier.padding(top = SERVICE_GROUP_GAP)) { fetchServiceCards(current.fetch) { tools = current.copy(fetch = it) } }
-                        CardGroup(Modifier.padding(top = SERVICE_GROUP_GAP)) { weatherServiceCards(current.weather) { tools = current.copy(weather = it) } }
-                    }
-                }
+                ) { _ -> }
             }
         }
     }

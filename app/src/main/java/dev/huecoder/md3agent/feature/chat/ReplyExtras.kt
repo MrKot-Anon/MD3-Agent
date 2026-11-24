@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Content_copy
 import com.composables.icons.materialsymbols.rounded.Language
@@ -58,15 +57,7 @@ fun SourcePills(sources: List<SourceUi>, modifier: Modifier = Modifier) {
 
 @Composable
 private fun Favicon(host: String) {
-    val fallback = rememberVectorPainter(MaterialSymbols.Rounded.Language)
-    AsyncImage(
-        model = "https://$host/favicon.ico",
-        contentDescription = null,
-        placeholder = fallback,
-        error = fallback,
-        fallback = fallback,
-        modifier = Modifier.size(AssistChipDefaults.IconSize).clip(CircleShape),
-    )
+    Icon(MaterialSymbols.Rounded.Language, contentDescription = null, modifier = Modifier.size(AssistChipDefaults.IconSize))
 }
 
 @Composable

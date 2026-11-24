@@ -661,7 +661,7 @@
     <string name="about_update_not_published">Публичных релизов пока нет</string>
     <string name="about_update_unreachable">Не получилось достучаться до GitHub, попробуй позже</string>
     <string name="about_source">Исходный код</string>
-    <string name="about_source_summary">github.com/huecoder/md3-agent</string>
+    <string name="about_source_summary">github.com/MrKot-Anon/MD3-Agent</string>
     <string name="about_license">Лицензия</string>
     <string name="about_license_summary">GNU GPL v3.0</string>
     <string name="about_third_party">Сторонние ресурсы</string>

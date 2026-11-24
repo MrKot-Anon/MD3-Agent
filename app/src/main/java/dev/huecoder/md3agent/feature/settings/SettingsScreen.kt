@@ -109,7 +109,9 @@ fun SettingsScreen(destinations: SettingsDestinations) {
 
     SettingsScaffold(stringResource(R.string.settings_title), onBack = null) { padding ->
         val current = settings ?: return@SettingsScaffold
-        val available = SettingsPage.entries.filter { it.isAvailable(current.mode) }
+        val available = SettingsPage.entries.filter {
+            it.isAvailable(current.mode) && it !in setOf(SettingsPage.MCP, SettingsPage.NETWORK, SettingsPage.VOICE)
+        }
         val rows = searchRows(available, current.mode)
         val results = SettingsSearch.filter(rows, query)
         val groups = SettingsSection.entries.map { section ->

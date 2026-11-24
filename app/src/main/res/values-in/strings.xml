@@ -632,7 +632,7 @@
     <string name="about_update_not_published">Belum ada rilis publik</string>
     <string name="about_update_unreachable">Tidak dapat menjangkau GitHub, coba lagi nanti</string>
     <string name="about_source">Kode sumber</string>
-    <string name="about_source_summary">github.com/huecoder/md3-agent</string>
+    <string name="about_source_summary">github.com/MrKot-Anon/MD3-Agent</string>
     <string name="about_license">Lisensi</string>
     <string name="about_license_summary">GNU GPL v3.0</string>
     <string name="about_third_party">Aset pihak ketiga</string>

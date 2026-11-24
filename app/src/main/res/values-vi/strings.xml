@@ -632,7 +632,7 @@
     <string name="about_update_not_published">Chưa có bản phát hành công khai</string>
     <string name="about_update_unreachable">Không kết nối được GitHub, hãy thử lại sau</string>
     <string name="about_source">Mã nguồn</string>
-    <string name="about_source_summary">github.com/huecoder/md3-agent</string>
+    <string name="about_source_summary">github.com/MrKot-Anon/MD3-Agent</string>
     <string name="about_license">Giấy phép</string>
     <string name="about_license_summary">GNU GPL v3.0</string>
     <string name="about_third_party">Tài nguyên bên thứ ba</string>
