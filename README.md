@@ -28,6 +28,8 @@ To include x86_64 native libraries for an emulator build:
 
 The APK is written to `app/build/outputs/apk/debug/app-debug.apk`. The standard build targets arm64 phones.
 
+Install the signed APK from the [latest release](https://github.com/MrKot-Anon/MD3-Agent/releases/latest). Its signing certificate SHA-256 is `3baf5ec839e28dfe62a074db5477e8458cad01d3940093a6947d504b5bbde686`.
+
 ## Upstream and license
 
 Forked from [huecoder/MD3-Agent](https://github.com/huecoder/MD3-Agent). The source is licensed under GPL-3.0; see [LICENSE](LICENSE). Third-party notices are in [THIRD_PARTY.md](THIRD_PARTY.md).
