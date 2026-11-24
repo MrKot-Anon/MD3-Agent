@@ -25,11 +25,16 @@ class SandboxShell(private val workspace: File, private val tempDir: File) : She
 
 class RootShell : Shell {
     override suspend fun run(command: String, timeoutMs: Long): ShellResult = runInterruptible(Dispatchers.IO) {
-        try {
-            ProcessRunner.run(listOf(SU, "-c", command), timeoutMs)
-        } catch (e: IOException) {
-            throw IllegalStateException("su is not available on this device: ${e.message}")
-        }
+        runBlocking(command, timeoutMs)
+    }
+
+    fun runBlocking(command: String, timeoutMs: Long): ShellResult = try {
+        val standard = ProcessRunner.run(listOf(SU, "-c", command), timeoutMs)
+        if (standard.exitCode != 0 && standard.stderr.contains("invalid uid/gid")) {
+            ProcessRunner.run(listOf(SU, "0", SYSTEM_SH, "-c", command), timeoutMs)
+        } else standard
+    } catch (e: IOException) {
+        throw IllegalStateException("su is not available on this device: ${e.message}")
     }
 
     suspend fun status(): AccessStatus = try {

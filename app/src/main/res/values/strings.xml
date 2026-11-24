@@ -361,11 +361,13 @@
     <string name="access_shell_hint">Where the assistant runs shell commands.</string>
     <string name="access_mode_sandbox">App sandbox</string>
     <string name="access_mode_sandbox_summary">Built-in shell, only the app\'s own files</string>
-    <string name="access_mode_termux">Termux</string>
-    <string name="access_mode_termux_summary">Bash with Termux packages</string>
+    <string name="access_mode_termux">Debian</string>
+    <string name="access_mode_termux_summary">Debian bash and apt packages</string>
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">ADB level: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
+    <string name="access_mode_debian">Debian chroot</string>
+    <string name="access_mode_debian_summary">Bundled Debian, root required; unrestricted Debian network</string>
     <string name="access_status_ready">Ready</string>
     <string name="access_status_unknown">Not checked yet</string>
     <string name="access_status_not_installed">Not installed</string>
@@ -974,7 +976,7 @@
     <string name="onboarding_goal_automate">Automation</string>
     <string name="onboarding_experience_title">What have you tried?</string>
     <string name="onboarding_experience_api_key">Getting an API key</string>
-    <string name="onboarding_experience_terminal">Terminal or Termux</string>
+    <string name="onboarding_experience_terminal">Debian commands</string>
     <string name="onboarding_experience_sideload">Installing APKs</string>
     <string name="onboarding_experience_none">None of these</string>
     <string name="onboarding_places_title">Where to use it?</string>

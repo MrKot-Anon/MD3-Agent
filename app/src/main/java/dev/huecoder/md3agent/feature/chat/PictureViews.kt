@@ -125,7 +125,7 @@ private fun PictureTile(picture: Picture, modifier: Modifier, captionVisibility:
 private fun PictureImage(picture: Picture, modifier: Modifier, contentScale: ContentScale, onState: (AsyncImagePainter.State) -> Unit) {
     val context = LocalContext.current
     val request = remember(picture.url) {
-        ImageRequest.Builder(context).data(picture.url).size(REQUEST_SIDE_PX).crossfade(true).build()
+        ImageRequest.Builder(context).data(picture.url.takeUnless { it.startsWith("http://") || it.startsWith("https://") }).size(REQUEST_SIDE_PX).crossfade(true).build()
     }
     AsyncImage(
         model = request,

@@ -112,7 +112,7 @@ private fun LightboxViewer(images: List<ViewableFile>, startIndex: Int, onDismis
         HorizontalPager(state = pager, beyondViewportPageCount = 1, pageSpacing = PAGE_SPACING, modifier = Modifier.fillMaxSize()) { page ->
             val zoom = rememberZoomState()
             AsyncImage(
-                model = images[page].url ?: images[page].file,
+                model = images[page].file,
                 contentDescription = images[page].name,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize().zoomable(zoom, onTap = { chromeVisible = !chromeVisible }),

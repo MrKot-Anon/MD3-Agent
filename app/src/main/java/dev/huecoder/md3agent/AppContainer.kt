@@ -187,6 +187,7 @@ class AppContainer(context: Context) {
             MemoryUpdateTool(memories),
             MemoryDeleteTool(memories),
             MemorySearchTool(memories),
+            RunCommandTool(shellAccess),
             ListFilesTool(deviceFiles),
             ReadFileTool(deviceFiles, attachments),
             WriteFileTool(deviceFiles),

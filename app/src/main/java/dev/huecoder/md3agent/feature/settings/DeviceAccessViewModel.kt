@@ -61,7 +61,6 @@ class DeviceAccessViewModel(
         _permissions.update { it + local }
         viewModelScope.launch {
             val shells = mapOf(
-                DevicePermission.TERMUX to access.status(ShellMode.TERMUX, probeRoot = false),
                 DevicePermission.SHIZUKU to access.status(ShellMode.SHIZUKU, probeRoot = false),
             )
             _permissions.update { it + shells + (DevicePermission.ROOT to (it[DevicePermission.ROOT] ?: AccessStatus.UNKNOWN)) }

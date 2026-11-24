@@ -69,7 +69,6 @@ import dev.huecoder.md3agent.data.settings.FileScope
 import dev.huecoder.md3agent.data.settings.ShellMode
 import dev.huecoder.md3agent.system.control.PhoneControlService
 import dev.huecoder.md3agent.system.shell.AccessStatus
-import dev.huecoder.md3agent.system.shell.TermuxShell
 import dev.huecoder.md3agent.ui.components.FoldableHeader
 import dev.huecoder.md3agent.ui.components.SectionFolds
 import dev.huecoder.md3agent.ui.components.SettingsScaffold
@@ -121,7 +120,6 @@ internal fun rememberPermissionActions(
         notificationsDenied = !granted
         refresh()
     }
-    val askTermux = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { refresh() }
 
     return { permission, status ->
         when (permission) {
@@ -139,10 +137,7 @@ internal fun rememberPermissionActions(
             DevicePermission.BACKGROUND_WORK -> PermissionAction(R.string.access_action_grant) { context.requestUnrestrictedBackground() }
             DevicePermission.ALL_FILES -> PermissionAction(R.string.access_action_open_settings) { context.openAllFilesAccess() }.takeIf { status != AccessStatus.UNAVAILABLE }
             DevicePermission.PHONE_CONTROL -> PermissionAction(R.string.access_action_open_settings) { context.openAccessibilitySettings() }
-            DevicePermission.TERMUX -> when (status) {
-                AccessStatus.NOT_INSTALLED -> PermissionAction(R.string.access_action_install) { context.openUrl(TERMUX_URL) }
-                else -> PermissionAction(R.string.access_action_grant) { askTermux.launch(TermuxShell.PERMISSION) }
-            }
+            DevicePermission.TERMUX -> null
             DevicePermission.SHIZUKU -> when (status) {
                 AccessStatus.NOT_RUNNING -> PermissionAction(R.string.access_action_open) { context.openShizuku() }
                 AccessStatus.NEEDS_PERMISSION -> PermissionAction(R.string.access_action_grant, requestShizuku)
@@ -221,30 +216,27 @@ internal fun DeviceAccessContent(
                 title = stringResource(R.string.access_section_shell),
                 expanded = commandsOpen,
                 onToggle = { folds.toggle(AccessSection.COMMANDS.name) },
-                summary = stringResource(state.shell.title),
+                summary = stringResource(R.string.access_mode_debian),
                 modifier = Modifier.animateItem(),
             )
         }
         if (commandsOpen) {
             item(key = "caption-commands") { SectionCaption(R.string.access_shell_hint, Modifier.animateItem()) }
-            ShellMode.entries.forEachIndexed { index, mode ->
+            listOf(ShellMode.ROOT).forEachIndexed { index, mode ->
                 item(key = "shell-${mode.name}") {
                     val needed = mode.requiredPermission()
                     val status = state.statusOf(needed)
                     ChoiceCard(
                         presentation = mode.presentation,
-                        selected = state.shell == mode,
+                        selected = true,
                         status = status.takeIf { needed != null },
                         action = needed?.let { actionFor(it, status) },
                         isBusy = needed == DevicePermission.ROOT && state.checkingRoot,
-                        shape = ListItemDefaults.segmentedShapes(index, ShellMode.entries.size).shape,
+                        shape = ListItemDefaults.segmentedShapes(index, 1).shape,
                         onSelect = { onSelectShell(mode) },
                         modifier = Modifier.animateItem(),
                     )
                 }
-            }
-            if (state.shell == ShellMode.TERMUX && state.statusOf(DevicePermission.TERMUX) == AccessStatus.READY) {
-                item(key = "termux-note") { TermuxNote(Modifier.padding(top = 12.dp).animateItem()) }
             }
         }
 
@@ -388,29 +380,6 @@ private fun StatusLabel(status: AccessStatus) {
 }
 
 @Composable
-private fun TermuxNote(modifier: Modifier = Modifier) {
-    val clipboard = LocalClipboard.current
-    val scope = rememberCoroutineScope()
-    Surface(shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainerHigh, modifier = modifier.fillMaxWidth()) {
-        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(stringResource(R.string.access_setup_termux_ready), style = MaterialTheme.typography.bodyMedium)
-            Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLowest) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 12.dp)) {
-                    Text(
-                        TermuxShell.ENABLE_EXTERNAL_APPS,
-                        style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                        modifier = Modifier.weight(1f).padding(vertical = 12.dp),
-                    )
-                    IconButton(onClick = { scope.launch { clipboard.copyText(TermuxShell.ENABLE_EXTERNAL_APPS) } }) {
-                        Icon(MaterialSymbols.Rounded.Content_copy, contentDescription = stringResource(R.string.chat_copy))
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun AccessStatus.color() = when (this) {
     AccessStatus.READY -> MaterialTheme.colorScheme.primary
     AccessStatus.UNKNOWN -> MaterialTheme.colorScheme.onSurfaceVariant
@@ -433,7 +402,7 @@ private val ShellMode.presentation: Presentation
         ShellMode.SANDBOX -> Presentation(R.string.access_mode_sandbox, R.string.access_mode_sandbox_summary, MaterialSymbols.Rounded.Smartphone)
         ShellMode.TERMUX -> Presentation(R.string.access_mode_termux, R.string.access_mode_termux_summary, MaterialSymbols.Rounded.Terminal)
         ShellMode.SHIZUKU -> Presentation(R.string.access_mode_shizuku, R.string.access_mode_shizuku_summary, MaterialSymbols.Rounded.Adb)
-        ShellMode.ROOT -> Presentation(R.string.access_mode_root, R.string.access_shell_root_summary, MaterialSymbols.Rounded.Shield_lock)
+        ShellMode.ROOT -> Presentation(R.string.access_mode_debian, R.string.access_mode_debian_summary, MaterialSymbols.Rounded.Shield_lock)
     }
 
 @get:StringRes
@@ -492,7 +461,6 @@ private fun Context.openShizuku() {
 }
 
 private val BUSY_INDICATOR_SIZE = 32.dp
-private const val TERMUX_URL = "https://f-droid.org/packages/com.termux/"
 private const val SHIZUKU_PACKAGE = "moe.shizuku.privileged.api"
 private const val SHIZUKU_URL = "https://shizuku.rikka.app/download/"
 private const val SETTINGS_FRAGMENT_ARG = ":settings:fragment_args_key"
