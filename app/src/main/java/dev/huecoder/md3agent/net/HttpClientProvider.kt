@@ -2,6 +2,7 @@ package dev.huecoder.md3agent.net
 
 import dev.huecoder.md3agent.data.settings.NetworkSettings
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -10,19 +11,20 @@ import kotlinx.coroutines.flow.stateIn
 import okhttp3.OkHttpClient
 import okhttp3.Interceptor
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 class HttpClientProvider(
     networkSettings: Flow<NetworkSettings>,
     scope: CoroutineScope,
-    private val permits: (HttpUrl) -> Boolean = LocalEndpointPolicy::permits,
+    private val permits: suspend (HttpUrl) -> Boolean = { false },
 ) {
     private val baseClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(Interceptor { chain ->
             val url = chain.request().url
-            if (!permits(url)) {
-                throw IOException("Network access is limited to the configured local model endpoint")
+            if (!runBlocking { permits(url) }) {
+                throw IOException("Network access is limited to configured model endpoints")
             }
             chain.proceed(chain.request())
         })
@@ -47,9 +49,17 @@ class HttpClientProvider(
 }
 
 internal object LocalEndpointPolicy {
-    fun permits(url: HttpUrl): Boolean =
-        url.scheme == "http" && url.host == "172.16.88.10" && url.port == 8080 && url.encodedPath.startsWith("/v1/")
+    fun permits(url: HttpUrl, configuredBaseUrls: List<String>): Boolean =
+        configuredBaseUrls.any { raw ->
+            val base = raw.trim().toHttpUrlOrNull() ?: return@any false
+            if (!permitsBaseUrl(base)) return@any false
+            val path = base.encodedPath.trimEnd('/').ifEmpty { "/" }
+            url.scheme == base.scheme && url.host == base.host && url.port == base.port &&
+                url.username.isEmpty() && url.password.isEmpty() &&
+                (url.encodedPath == path || url.encodedPath.startsWith(if (path == "/") path else "$path/"))
+        }
 
     fun permitsBaseUrl(url: HttpUrl): Boolean =
-        url.scheme == "http" && url.host == "172.16.88.10" && url.port == 8080 && url.encodedPath.trimEnd('/') == "/v1"
+        url.scheme in setOf("http", "https") && url.username.isEmpty() && url.password.isEmpty() &&
+            url.query == null && url.fragment == null
 }

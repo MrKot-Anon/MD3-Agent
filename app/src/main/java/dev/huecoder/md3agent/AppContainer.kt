@@ -47,6 +47,7 @@ import dev.huecoder.md3agent.llm.ModelCatalogClient
 import dev.huecoder.md3agent.llm.TranscriptionClient
 import dev.huecoder.md3agent.llm.VoiceListClient
 import dev.huecoder.md3agent.net.HttpClientProvider
+import dev.huecoder.md3agent.net.LocalEndpointPolicy
 import dev.huecoder.md3agent.prompt.DeviceInfoProvider
 import dev.huecoder.md3agent.prompt.SystemPromptRenderer
 import dev.huecoder.md3agent.tools.ReadScreenTool
@@ -120,7 +121,9 @@ class AppContainer(context: Context) {
     val assistantSettings: StateFlow<AssistantSettings?> = settings.settings.map { it.assistant }.distinctUntilChanged()
         .stateIn(applicationScope, SharingStarted.Eagerly, null)
     val hapticEngine = HapticEngine(appContext)
-    val httpClients = HttpClientProvider(settings.networkSettings, applicationScope)
+    val httpClients = HttpClientProvider(settings.networkSettings, applicationScope) { url ->
+        LocalEndpointPolicy.permits(url, settings.current().providers.map { it.baseUrl })
+    }
 
     private val database = AppDatabase.build(context)
     val attachments = AttachmentStore(context)

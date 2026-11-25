@@ -50,7 +50,7 @@ fun ProviderEditorScreen(providerId: String?, onDone: () -> Unit) {
                         baseUrl = current.baseUrl,
                         onBaseUrl = { value -> viewModel.edit { it.copy(baseUrl = value) } },
                         baseUrlError = current.baseUrlError,
-                        defaultBaseUrl = "http://172.16.88.10:8080/v1",
+                        defaultBaseUrl = "",
                         apiKey = current.apiKey,
                         onApiKey = { value -> viewModel.edit { it.copy(apiKey = value) } },
                         shape = shape,

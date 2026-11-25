@@ -1,12 +1,10 @@
-# MD3 Agent — local-network fork
+# MD3 Agent — user-configured model endpoint
 
-This fork allows the Android assistant to contact one local OpenAI-compatible endpoint:
+Configure an OpenAI-compatible model endpoint in Models. Local HTTP and remote HTTPS URLs are supported, including paths with multiple segments.
 
-- API: `http://172.16.88.10:8080/v1`
+No provider or model is preconfigured. Add an endpoint after installation and select a model returned by that server. The app's HTTP client permits requests only to saved provider endpoints and their API paths. Redirects are disabled. Cloud provider choices are hidden from setup.
 
-No provider or model is preconfigured. Add the local endpoint in Models after installation and select a model returned by that server. The app's HTTP client permits only this host, port and `/v1/` path. Redirects are disabled. Cloud provider choices are hidden from setup.
-
-Web search, webpage reading, weather, MCP servers, remote favicons and remote image loading are disabled. Update checks contact only this fork's GitHub releases; the user chooses whether to download and install a new signed APK. The Android app's own network requests are restricted to the local model endpoint. Links opened in a separate browser are outside the app's network policy.
+Web search, webpage reading, weather, MCP servers, remote favicons and remote image loading are disabled. Update checks contact only this fork's GitHub releases; the user chooses whether to download and install a new signed APK. The Android app's own model requests are restricted to user-configured model endpoints. Links opened in a separate browser are outside the app's network policy.
 
 The `run_command` agent tool runs in a bundled Debian environment through PRoot, without device root or Termux. It inherits the app's Android UID and permissions. Debian commands can connect to any address, including package repositories; this traffic is separate from the Android app's model client. The tool starts in `/workspace`; `/app` exposes app files, `/app-cache` its cache, and `/sdcard` shared storage when Android permits it. Packages can be installed with `apt`. See [DEBIAN_ROOTFS.md](DEBIAN_ROOTFS.md) for sources and checksums.
 

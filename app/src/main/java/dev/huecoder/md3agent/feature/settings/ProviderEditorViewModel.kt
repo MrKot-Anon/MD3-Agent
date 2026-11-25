@@ -30,7 +30,7 @@ data class ProviderForm(
         get() = if (baseUrl.isBlank() || baseUrl.trim().toHttpUrlOrNull()?.let(LocalEndpointPolicy::permitsBaseUrl) == true) {
             null
         } else {
-            UiText.Resource(R.string.provider_local_endpoint_required)
+            UiText.Resource(R.string.provider_endpoint_invalid)
         }
 
     val canSave: Boolean
