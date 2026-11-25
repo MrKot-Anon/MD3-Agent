@@ -338,8 +338,8 @@
     <string name="access_shell_hint">Tempat asisten menjalankan perintah shell.</string>
     <string name="access_mode_sandbox">Sandbox aplikasi</string>
     <string name="access_mode_sandbox_summary">Shell bawaan, hanya file milik aplikasi sendiri</string>
-    <string name="access_mode_termux">Termux</string>
-    <string name="access_mode_termux_summary">Bash dengan paket Termux</string>
+    <string name="access_mode_termux">Debian</string>
+    <string name="access_mode_termux_summary">Debian bash and apt packages</string>
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">Level ADB: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
@@ -349,7 +349,6 @@
     <string name="access_status_not_running">Tidak berjalan</string>
     <string name="access_status_needs_permission">Perlu izin</string>
     <string name="access_status_unavailable">Tidak tersedia</string>
-    <string name="access_setup_termux_ready">Jalankan ini sekali di Termux agar menerima perintah dari aplikasi lain:</string>
     <string name="access_action_grant">Berikan</string>
     <string name="tools_section_fetch">Membaca halaman</string>
     <string name="tools_fetch_backend_direct">Langsung</string>
@@ -934,7 +933,7 @@
     <string name="onboarding_goal_automate">Otomatisasi</string>
     <string name="onboarding_experience_title">Apa yang pernah kamu coba?</string>
     <string name="onboarding_experience_api_key">Mendapatkan kunci API</string>
-    <string name="onboarding_experience_terminal">Terminal atau Termux</string>
+    <string name="onboarding_experience_terminal">Perintah Debian</string>
     <string name="onboarding_experience_sideload">Memasang APK</string>
     <string name="onboarding_experience_none">Tidak ada dari ini</string>
     <string name="onboarding_places_title">Mau dipakai di mana?</string>

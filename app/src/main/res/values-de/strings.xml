@@ -340,8 +340,8 @@
     <string name="access_shell_hint">Wo der Assistent Shell-Befehle ausführt.</string>
     <string name="access_mode_sandbox">App-Sandbox</string>
     <string name="access_mode_sandbox_summary">Integrierte Shell, nur die eigenen Dateien der App</string>
-    <string name="access_mode_termux">Termux</string>
-    <string name="access_mode_termux_summary">Bash mit Termux-Paketen</string>
+    <string name="access_mode_termux">Debian</string>
+    <string name="access_mode_termux_summary">Debian bash and apt packages</string>
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">ADB-Ebene: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
@@ -351,7 +351,6 @@
     <string name="access_status_not_running">Läuft nicht</string>
     <string name="access_status_needs_permission">Berechtigung nötig</string>
     <string name="access_status_unavailable">Nicht verfügbar</string>
-    <string name="access_setup_termux_ready">Führe das einmal in Termux aus, damit es Befehle von anderen Apps annimmt:</string>
     <string name="access_action_grant">Erlauben</string>
     <string name="tools_section_fetch">Seiten lesen</string>
     <string name="tools_fetch_backend_direct">Direkt</string>
@@ -948,7 +947,7 @@
     <string name="onboarding_goal_automate">Automatisierung</string>
     <string name="onboarding_experience_title">Was hast du schon probiert?</string>
     <string name="onboarding_experience_api_key">Einen API-Schlüssel besorgen</string>
-    <string name="onboarding_experience_terminal">Terminal oder Termux</string>
+    <string name="onboarding_experience_terminal">Debian-Befehle</string>
     <string name="onboarding_experience_sideload">APKs installieren</string>
     <string name="onboarding_experience_none">Nichts davon</string>
     <string name="onboarding_places_title">Wo willst du ihn nutzen?</string>

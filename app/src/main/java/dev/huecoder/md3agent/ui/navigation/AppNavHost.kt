@@ -26,6 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import dev.huecoder.md3agent.feature.chat.ChatScreen
 import dev.huecoder.md3agent.feature.main.MainScreen
+import dev.huecoder.md3agent.feature.main.UpdatePromptDialog
+import dev.huecoder.md3agent.feature.main.UpdatePromptViewModel
+import dev.huecoder.md3agent.ui.components.appViewModel
 import dev.huecoder.md3agent.feature.mode.ModeScreen
 import dev.huecoder.md3agent.feature.settings.AgentEditorScreen
 import dev.huecoder.md3agent.feature.settings.AssistantInvokeSettingsScreen
@@ -60,6 +63,8 @@ import dev.huecoder.md3agent.feature.home.HomeScreen
 @Composable
 fun AppNavHost(chatToOpen: String?, onChatOpened: () -> Unit, target: LaunchTarget?, onTargetHandled: () -> Unit) {
     val container = (LocalContext.current.applicationContext as App).container
+    val updates = appViewModel { UpdatePromptViewModel(it.updates, it.settings) }
+    val updateOffer by updates.offer.collectAsStateWithLifecycle()
     val onboarded by remember(container) { container.settings.settings.map { it.mode.onboarded }.distinctUntilChanged() }
         .collectAsStateWithLifecycle(initialValue = null)
     val start = remember(onboarded != null) { onboarded?.let { if (it) HomeRoute else OnboardingRoute() } }
@@ -67,7 +72,9 @@ fun AppNavHost(chatToOpen: String?, onChatOpened: () -> Unit, target: LaunchTarg
         Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
         return
     }
+    LaunchedEffect(onboarded) { if (onboarded == true) updates.checkOnStartup() }
     AppNavGraph(start, chatToOpen, onChatOpened, target, onTargetHandled)
+    updateOffer?.let { UpdatePromptDialog(it, updates::dismiss) }
 }
 
 @Composable

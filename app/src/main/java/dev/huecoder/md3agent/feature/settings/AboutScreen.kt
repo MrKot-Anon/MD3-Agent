@@ -22,6 +22,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -34,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Code
 import com.composables.icons.materialsymbols.rounded.Gavel
@@ -42,6 +48,9 @@ import com.composables.icons.materialsymbols.rounded.Package_2
 import dev.huecoder.md3agent.BuildConfig
 import dev.huecoder.md3agent.R
 import dev.huecoder.md3agent.data.updates.UpdateChecker
+import dev.huecoder.md3agent.data.updates.UpdateStatus
+import dev.huecoder.md3agent.feature.main.UpdatePromptDialog
+import dev.huecoder.md3agent.ui.components.appViewModel
 import dev.huecoder.md3agent.ui.components.SettingsScaffold
 import dev.huecoder.md3agent.ui.components.ShapeBadge
 import dev.huecoder.md3agent.ui.components.groupedListColors
@@ -49,6 +58,10 @@ import dev.huecoder.md3agent.ui.components.groupedListColors
 @Composable
 fun AboutScreen(onBack: () -> Unit, onSecret: () -> Unit) {
     val context = LocalContext.current
+    val updates = appViewModel { AboutViewModel(it.updates) }
+    val check by updates.check.collectAsStateWithLifecycle()
+    var offer by remember { mutableStateOf<UpdateStatus.Available?>(null) }
+    LaunchedEffect(check) { offer = (check as? UpdateCheck.Done)?.status as? UpdateStatus.Available }
     val links = listOf(
         AboutLink(MaterialSymbols.Rounded.Code, R.string.about_source, R.string.about_source_summary, UpdateChecker.REPOSITORY_URL),
         AboutLink(MaterialSymbols.Rounded.Gavel, R.string.about_license, R.string.about_license_summary, "${UpdateChecker.REPOSITORY_URL}/blob/main/LICENSE"),
@@ -62,6 +75,24 @@ fun AboutScreen(onBack: () -> Unit, onSecret: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(ListItemDefaults.SegmentedGap),
         ) {
             AppIdentity(onSecret, Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp))
+            SegmentedListItem(
+                onClick = {
+                    val available = (check as? UpdateCheck.Done)?.status as? UpdateStatus.Available
+                    if (available != null) offer = available else updates.checkForUpdates()
+                },
+                shapes = ListItemDefaults.segmentedShapes(0, 1),
+                colors = groupedListColors(),
+                leadingContent = { ShapeBadge(MaterialSymbols.Rounded.Package_2) },
+                supportingContent = {
+                    Text(when (val status = (check as? UpdateCheck.Done)?.status) {
+                        is UpdateStatus.Available -> stringResource(R.string.about_update_available, status.version)
+                        is UpdateStatus.UpToDate -> stringResource(R.string.about_update_latest, status.latest)
+                        UpdateStatus.NotPublished -> stringResource(R.string.about_update_not_published)
+                        UpdateStatus.Unreachable -> stringResource(R.string.about_update_unreachable)
+                        null -> stringResource(if (check == UpdateCheck.Running) R.string.about_update_running else R.string.about_update_idle)
+                    })
+                },
+            ) { Text(stringResource(R.string.about_check_updates), style = MaterialTheme.typography.titleMediumEmphasized) }
             links.forEachIndexed { index, link ->
                 SegmentedListItem(
                     onClick = { context.openUrl(link.url) },
@@ -74,6 +105,7 @@ fun AboutScreen(onBack: () -> Unit, onSecret: () -> Unit) {
             }
         }
     }
+    offer?.let { UpdatePromptDialog(it) { offer = null } }
 }
 
 @Composable

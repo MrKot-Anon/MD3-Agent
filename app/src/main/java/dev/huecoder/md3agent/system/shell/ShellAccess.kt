@@ -7,7 +7,7 @@ import java.io.File
 
 class ShellAccess(context: Context) {
     val workspace = File(context.filesDir, WORKSPACE_DIR)
-    val debian = DebianChroot(context, RootShell(), workspace)
+    val debian = DebianProot(context, workspace)
     val shizuku = ShizukuShell(context)
     val root = RootShell()
     private val sandbox = SandboxShell(workspace, context.cacheDir)
@@ -21,13 +21,14 @@ class ShellAccess(context: Context) {
     fun shell(mode: ShellMode): Shell = when (mode) {
         ShellMode.SANDBOX -> sandbox
         ShellMode.TERMUX -> debian
+        ShellMode.DEBIAN -> debian
         ShellMode.SHIZUKU -> shizuku
         ShellMode.ROOT -> root
     }
 
     suspend fun status(mode: ShellMode, probeRoot: Boolean): AccessStatus = when (mode) {
         ShellMode.SANDBOX -> AccessStatus.READY
-        ShellMode.TERMUX -> debian.status()
+        ShellMode.TERMUX, ShellMode.DEBIAN -> debian.status()
         ShellMode.SHIZUKU -> shizuku.status()
         ShellMode.ROOT -> if (probeRoot) root.status() else AccessStatus.UNKNOWN
     }

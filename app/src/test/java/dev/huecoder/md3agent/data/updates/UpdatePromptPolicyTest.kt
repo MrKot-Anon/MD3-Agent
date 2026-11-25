@@ -18,9 +18,10 @@ class UpdatePromptPolicyTest {
     }
 
     @Test
-    fun offersAnAvailableVersionOnce() {
+    fun offersAnAvailableVersionAgainAfterOneDay() {
         assertEquals(available, UpdatePromptPolicy.offerFor(available, ""))
-        assertNull(UpdatePromptPolicy.offerFor(available, "0.9.6"))
+        assertNull(UpdatePromptPolicy.offerFor(available, "0.9.6", dismissedAt = 1_000_000L, now = 1_000_000L))
+        assertEquals(available, UpdatePromptPolicy.offerFor(available, "0.9.6", dismissedAt = 1_000_000L, now = 1_000_000L + 24.hours.inWholeMilliseconds))
     }
 
     @Test

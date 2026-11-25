@@ -338,8 +338,8 @@
     <string name="access_shell_hint">Nơi trợ lý chạy các lệnh shell.</string>
     <string name="access_mode_sandbox">Sandbox của ứng dụng</string>
     <string name="access_mode_sandbox_summary">Shell tích hợp, chỉ truy cập tệp của chính ứng dụng</string>
-    <string name="access_mode_termux">Termux</string>
-    <string name="access_mode_termux_summary">Bash cùng các gói của Termux</string>
+    <string name="access_mode_termux">Debian</string>
+    <string name="access_mode_termux_summary">Debian bash and apt packages</string>
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">Cấp ADB: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
@@ -349,7 +349,6 @@
     <string name="access_status_not_running">Không chạy</string>
     <string name="access_status_needs_permission">Cần cấp quyền</string>
     <string name="access_status_unavailable">Không khả dụng</string>
-    <string name="access_setup_termux_ready">Chạy lệnh này một lần trong Termux để nó nhận lệnh từ các ứng dụng khác:</string>
     <string name="access_action_grant">Cấp quyền</string>
     <string name="tools_section_fetch">Đọc trang web</string>
     <string name="tools_fetch_backend_direct">Trực tiếp</string>
@@ -934,7 +933,7 @@
     <string name="onboarding_goal_automate">Tự động hóa</string>
     <string name="onboarding_experience_title">Bạn đã thử những gì?</string>
     <string name="onboarding_experience_api_key">Lấy khóa API</string>
-    <string name="onboarding_experience_terminal">Terminal hoặc Termux</string>
+    <string name="onboarding_experience_terminal">Lệnh Debian</string>
     <string name="onboarding_experience_sideload">Cài đặt APK</string>
     <string name="onboarding_experience_none">Không có gì trong số này</string>
     <string name="onboarding_places_title">Dùng ở đâu?</string>

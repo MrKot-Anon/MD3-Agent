@@ -220,7 +220,7 @@ class AppContainer(context: Context) {
         }
     }
 
-    val updates = UpdateChecker(httpClients, BuildConfig.VERSION_NAME)
+    val updates = UpdateChecker(appContext, BuildConfig.VERSION_NAME)
 
     val approvals = ToolApprovals()
 

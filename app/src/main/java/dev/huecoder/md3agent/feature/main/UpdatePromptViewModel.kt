@@ -15,9 +15,18 @@ class UpdatePromptViewModel(private val updates: UpdateChecker, private val sett
     private val _offer = MutableStateFlow<UpdateStatus.Available?>(null)
     val offer: StateFlow<UpdateStatus.Available?> = _offer.asStateFlow()
 
+    fun checkOnStartup() {
+        viewModelScope.launch {
+            val ui = settings.current().ui
+            val now = System.currentTimeMillis()
+            settings.updateInterface { it.copy(lastUpdateCheckAt = now) }
+            _offer.value = UpdatePromptPolicy.offerFor(updates.check(), ui.dismissedUpdateVersion, ui.dismissedUpdateAt, now)
+        }
+    }
+
     fun dismiss() {
         val version = _offer.value?.version ?: return
         _offer.value = null
-        viewModelScope.launch { settings.updateInterface { it.copy(dismissedUpdateVersion = version) } }
+        viewModelScope.launch { settings.updateInterface { it.copy(dismissedUpdateVersion = version, dismissedUpdateAt = System.currentTimeMillis()) } }
     }
 }

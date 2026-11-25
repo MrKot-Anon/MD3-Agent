@@ -366,15 +366,14 @@
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">ADB level: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
-    <string name="access_mode_debian">Debian chroot</string>
-    <string name="access_mode_debian_summary">Bundled Debian, root required; unrestricted Debian network</string>
+    <string name="access_mode_debian">Debian environment</string>
+    <string name="access_mode_debian_summary">Runs without root, with this app\'s permissions and unrestricted Debian network</string>
     <string name="access_status_ready">Ready</string>
     <string name="access_status_unknown">Not checked yet</string>
     <string name="access_status_not_installed">Not installed</string>
     <string name="access_status_not_running">Not running</string>
     <string name="access_status_needs_permission">Needs permission</string>
     <string name="access_status_unavailable">Not available</string>
-    <string name="access_setup_termux_ready">Run this once in Termux so it accepts commands from other apps:</string>
     <string name="access_action_grant">Grant</string>
     <string name="tools_section_fetch">Page reading</string>
     <string name="tools_fetch_backend_direct">Direct</string>
@@ -1104,4 +1103,8 @@
     <string name="callout_quote">Quote</string>
     <string name="callout_summary">Summary</string>
     <string name="details_default_summary">Details</string>
+    <string name="update_downloading">Downloading update…</string>
+    <string name="update_download_failed">Download failed</string>
+    <string name="update_install_permission_needed">Allow this app to install updates in Android settings</string>
+    <string name="update_install_failed">Could not open Android package installer</string>
 </resources>

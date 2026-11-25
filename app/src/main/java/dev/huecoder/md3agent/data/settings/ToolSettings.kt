@@ -100,13 +100,13 @@ data class FetchSettings(
 }
 
 @Serializable
-enum class ShellMode { SANDBOX, TERMUX, SHIZUKU, ROOT }
+enum class ShellMode { SANDBOX, TERMUX, SHIZUKU, ROOT, DEBIAN }
 
 @Serializable
 enum class FileScope { APP, SHARED_STORAGE, ROOT }
 
 @Serializable
-data class AccessSettings(val shell: ShellMode = ShellMode.SANDBOX, val files: FileScope = FileScope.APP) {
+data class AccessSettings(val shell: ShellMode = ShellMode.DEBIAN, val files: FileScope = FileScope.APP) {
     val usesRoot: Boolean get() = shell == ShellMode.ROOT || files == FileScope.ROOT
 }
 

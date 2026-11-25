@@ -21,8 +21,8 @@ android {
         applicationId = "dev.huecoder.md3agent"
         minSdk = 29
         targetSdk = 36
-        versionCode = 15
-        versionName = "0.9.6-local.3"
+        versionCode = 16
+        versionName = "0.9.6-local.4"
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -59,6 +59,10 @@ android {
         compose = true
         aidl = true
         buildConfig = true
+    }
+
+    packaging {
+        jniLibs.useLegacyPackaging = true
     }
 
     testOptions { unitTests.isReturnDefaultValues = true }
@@ -108,6 +112,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
+    implementation("org.apache.commons:commons-compress:1.27.1")
 
     implementation(libs.markdown.m3)
     implementation(libs.markdown.code)

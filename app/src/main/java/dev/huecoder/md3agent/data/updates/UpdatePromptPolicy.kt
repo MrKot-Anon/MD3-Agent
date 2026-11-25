@@ -7,6 +7,6 @@ object UpdatePromptPolicy {
 
     fun shouldCheck(now: Long, lastCheckAt: Long): Boolean = now - lastCheckAt >= CHECK_INTERVAL_MS
 
-    fun offerFor(status: UpdateStatus, dismissedVersion: String): UpdateStatus.Available? =
-        (status as? UpdateStatus.Available)?.takeIf { it.version != dismissedVersion }
+    fun offerFor(status: UpdateStatus, dismissedVersion: String, dismissedAt: Long = 0, now: Long = System.currentTimeMillis()): UpdateStatus.Available? =
+        (status as? UpdateStatus.Available)?.takeIf { it.version != dismissedVersion || now - dismissedAt >= 24.hours.inWholeMilliseconds }
 }

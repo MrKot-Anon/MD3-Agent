@@ -122,6 +122,7 @@ class DeviceAccessViewModel(
 fun ShellMode.requiredPermission(): DevicePermission? = when (this) {
     ShellMode.SANDBOX -> null
     ShellMode.TERMUX -> DevicePermission.TERMUX
+    ShellMode.DEBIAN -> null
     ShellMode.SHIZUKU -> DevicePermission.SHIZUKU
     ShellMode.ROOT -> DevicePermission.ROOT
 }

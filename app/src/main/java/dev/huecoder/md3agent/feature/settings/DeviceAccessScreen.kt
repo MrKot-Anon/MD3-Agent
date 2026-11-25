@@ -222,7 +222,7 @@ internal fun DeviceAccessContent(
         }
         if (commandsOpen) {
             item(key = "caption-commands") { SectionCaption(R.string.access_shell_hint, Modifier.animateItem()) }
-            listOf(ShellMode.ROOT).forEachIndexed { index, mode ->
+            listOf(ShellMode.DEBIAN).forEachIndexed { index, mode ->
                 item(key = "shell-${mode.name}") {
                     val needed = mode.requiredPermission()
                     val status = state.statusOf(needed)
@@ -401,6 +401,7 @@ private val ShellMode.presentation: Presentation
     get() = when (this) {
         ShellMode.SANDBOX -> Presentation(R.string.access_mode_sandbox, R.string.access_mode_sandbox_summary, MaterialSymbols.Rounded.Smartphone)
         ShellMode.TERMUX -> Presentation(R.string.access_mode_termux, R.string.access_mode_termux_summary, MaterialSymbols.Rounded.Terminal)
+        ShellMode.DEBIAN -> Presentation(R.string.access_mode_debian, R.string.access_mode_debian_summary, MaterialSymbols.Rounded.Terminal)
         ShellMode.SHIZUKU -> Presentation(R.string.access_mode_shizuku, R.string.access_mode_shizuku_summary, MaterialSymbols.Rounded.Adb)
         ShellMode.ROOT -> Presentation(R.string.access_mode_debian, R.string.access_mode_debian_summary, MaterialSymbols.Rounded.Shield_lock)
     }

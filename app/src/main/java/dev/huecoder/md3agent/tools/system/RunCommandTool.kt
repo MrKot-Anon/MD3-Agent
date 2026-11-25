@@ -32,8 +32,8 @@ class RunCommandTool(private val access: ShellAccess) : Tool {
     )
 
     override fun promptNote(settings: ToolSettings): String =
-        "$NAME runs as root in bundled Debian. Install packages with apt, execute code, and access /workspace, /app-cache, and /sdcard when shared storage permission is granted. " +
-            "Debian network connections are unrestricted. The chroot requires working su root access."
+        "$NAME runs in bundled Debian through PRoot under this app's Android UID. Install packages with apt and access /workspace, /app, /app-cache, and /sdcard within the app's permissions. " +
+            "Debian network connections are unrestricted. No device root access is required."
 
     override suspend fun execute(arguments: JsonObject, settings: ToolSettings): ToolOutcome {
         val command = arguments.requireString("command")

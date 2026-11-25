@@ -7,6 +7,12 @@ import org.junit.Test
 
 class AppVersionTest {
     @Test
+    fun localRevisionsAreOrdered() {
+        assertTrue(AppVersion.parse("v0.9.6-local.4")!! > AppVersion.parse("0.9.6-local.3")!!)
+        assertTrue(AppVersion.parse("0.9.7")!! > AppVersion.parse("0.9.6-local.99")!!)
+    }
+
+    @Test
     fun `tags with a v prefix and suffix parse`() {
         assertEquals("0.7.0", AppVersion.parse("v0.7.0-beta")?.label)
     }

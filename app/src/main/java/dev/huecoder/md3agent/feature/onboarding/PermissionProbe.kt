@@ -22,7 +22,6 @@ class PermissionProbe(
         if (needs.microphone && !isGranted(Manifest.permission.RECORD_AUDIO)) add(DevicePermission.MICROPHONE)
         if (needs.phoneControl && !phoneControl.isReady()) add(DevicePermission.PHONE_CONTROL)
         if (needs.allFiles && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !files.hasSharedStorageAccess()) add(DevicePermission.ALL_FILES)
-        if (needs.termux && access.status(dev.huecoder.md3agent.data.settings.ShellMode.ROOT, probeRoot = true) != dev.huecoder.md3agent.system.shell.AccessStatus.READY) add(DevicePermission.ROOT)
     }
 
     private fun isGranted(permission: String) = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED

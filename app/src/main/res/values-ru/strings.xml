@@ -346,18 +346,19 @@
     <string name="access_shell_hint">Где ассистент запускает shell-команды.</string>
     <string name="access_mode_sandbox">Песочница приложения</string>
     <string name="access_mode_sandbox_summary">Встроенный shell, только свои файлы</string>
-    <string name="access_mode_termux">Termux</string>
-    <string name="access_mode_termux_summary">Bash с пакетами Termux</string>
+    <string name="access_mode_termux">Debian</string>
+    <string name="access_mode_termux_summary">Debian bash and apt packages</string>
     <string name="access_mode_shizuku">Shizuku</string>
     <string name="access_mode_shizuku_summary">Уровень ADB: pm, am, settings, input</string>
     <string name="access_mode_root">Root</string>
+    <string name="access_mode_debian">Среда Debian</string>
+    <string name="access_mode_debian_summary">Работает без root с правами приложения; сеть Debian не ограничена</string>
     <string name="access_status_ready">Готово</string>
     <string name="access_status_unknown">Ещё не проверено</string>
     <string name="access_status_not_installed">Не установлен</string>
     <string name="access_status_not_running">Не запущен</string>
     <string name="access_status_needs_permission">Нужно разрешение</string>
     <string name="access_status_unavailable">Недоступно</string>
-    <string name="access_setup_termux_ready">Один раз выполни это в Termux, чтобы он принимал команды от других приложений:</string>
     <string name="access_action_grant">Разрешить</string>
     <string name="tools_section_fetch">Чтение страниц</string>
     <string name="tools_fetch_backend_direct">Напрямую</string>
@@ -977,7 +978,7 @@
     <string name="onboarding_goal_automate">Автоматизация</string>
     <string name="onboarding_experience_title">Что вы уже пробовали?</string>
     <string name="onboarding_experience_api_key">Получение ключа API</string>
-    <string name="onboarding_experience_terminal">Терминал или Termux</string>
+    <string name="onboarding_experience_terminal">Команды Debian</string>
     <string name="onboarding_experience_sideload">Установка APK</string>
     <string name="onboarding_experience_none">Ничего из этого</string>
     <string name="onboarding_places_title">Где пользоваться?</string>
@@ -1105,4 +1106,8 @@
     <string name="callout_quote">Цитата</string>
     <string name="callout_summary">Кратко</string>
     <string name="details_default_summary">Подробности</string>
+    <string name="update_downloading">Загрузка обновления…</string>
+    <string name="update_download_failed">Не удалось загрузить обновление</string>
+    <string name="update_install_permission_needed">Разрешите этому приложению устанавливать обновления в настройках Android</string>
+    <string name="update_install_failed">Не удалось открыть установщик Android</string>
 </resources>

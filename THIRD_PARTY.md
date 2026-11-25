@@ -25,3 +25,5 @@ Vendor glyphs in `app/src/main/res/drawable/ic_vendor_*.xml` are monochrome trac
 
 - [dyn4j](https://github.com/dyn4j/dyn4j) (BSD-3-Clause, Copyright (c) William Bittle): 2D physics for the avatar knockout and the about screen playground
 - [jlatexmath-android](https://github.com/noties/jlatexmath-android) (GPL-2.0, JLaTeXMath): LaTeX formula rendering in replies
+- [Apache Commons Compress](https://commons.apache.org/proper/commons-compress/) (Apache-2.0): extraction of the bundled Debian layer
+- [oonid/pr PRoot engine](https://github.com/oonid/pr) (GPL-3.0-or-later as combined binary): rootless Debian execution; exact revision and binary checksums are in [DEBIAN_ROOTFS.md](DEBIAN_ROOTFS.md)

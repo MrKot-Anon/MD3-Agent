@@ -10,6 +10,7 @@ data class InterfaceSettings(
     val swipeLeft: SwipeAction = SwipeAction.ARCHIVE,
     val lastUpdateCheckAt: Long = 0,
     val dismissedUpdateVersion: String = "",
+    val dismissedUpdateAt: Long = 0,
 ) {
     companion object {
         const val DEFAULT_HAPTIC_STRENGTH = 0.85f
