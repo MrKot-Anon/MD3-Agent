@@ -2,25 +2,43 @@ package dev.huecoder.md3agent.data.updates
 
 import android.content.Context
 import dev.huecoder.md3agent.net.fetchText
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.File
 import java.io.IOException
 import java.security.MessageDigest
+import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 sealed interface UpdateStatus {
     data class UpToDate(val latest: String) : UpdateStatus
-    data class Available(val version: String, val pageUrl: String, val apkUrl: String?, val sha256: String? = null) : UpdateStatus
+    data class Available(val version: String, val pageUrl: String, val apkUrl: String?, val sha256: String? = null, val sizeBytes: Long? = null) : UpdateStatus
     data object NotPublished : UpdateStatus
     data object Unreachable : UpdateStatus
+}
+
+data class UpdateDownloadProgress(val bytesRead: Long, val totalBytes: Long?, val elapsedMillis: Long) {
+    val percent: Int?
+        get() = totalBytes?.takeIf { it > 0 }?.let { ((bytesRead.coerceAtMost(it) * 100) / it).toInt() }
+
+    val etaSeconds: Long?
+        get() {
+            val total = totalBytes?.takeIf { it > bytesRead } ?: return if (percent == 100) 0 else null
+            if (bytesRead <= 0 || elapsedMillis < 1000) return null
+            return ((total - bytesRead) * elapsedMillis / bytesRead + 999) / 1000
+        }
 }
 
 class UpdateChecker(private val context: Context, private val installedVersion: String) {
@@ -53,7 +71,8 @@ class UpdateChecker(private val context: Context, private val installedVersion: 
         if (!apkUrl.startsWith("$REPOSITORY_URL/releases/download/$tag/") || !apkUrl.endsWith(".apk")) return UpdateStatus.Unreachable
         val sha = asset["digest"]?.jsonPrimitive?.content?.removePrefix("sha256:")
         if (sha?.matches(Regex("[0-9a-fA-F]{64}")) != true) return UpdateStatus.Unreachable
-        UpdateStatus.Available(tag.removePrefix("v"), pageUrl, apkUrl, sha.lowercase())
+        val size = asset["size"]?.jsonPrimitive?.longOrNull?.takeIf { it > 0 }
+        UpdateStatus.Available(tag.removePrefix("v"), pageUrl, apkUrl, sha.lowercase(), size)
       } catch (cancelled: CancellationException) {
         throw cancelled
       } catch (_: Exception) {
@@ -61,41 +80,67 @@ class UpdateChecker(private val context: Context, private val installedVersion: 
       }
     }
 
-    suspend fun download(offer: UpdateStatus.Available): File = withContext(Dispatchers.IO) {
+    suspend fun download(offer: UpdateStatus.Available, onProgress: (UpdateDownloadProgress) -> Unit = {}): File {
         val url = offer.apkUrl ?: throw IOException("Release has no APK")
         if (!url.startsWith("$REPOSITORY_URL/releases/download/") || !url.endsWith(".apk")) throw IOException("Unexpected APK URL")
         val expected = offer.sha256 ?: throw IOException("Release has no APK checksum")
         val destination = File(context.cacheDir, "updates/${offer.version.replace(Regex("[^a-zA-Z0-9._-]"), "_")}.apk")
         destination.parentFile?.mkdirs()
-        val partial = File(destination.path + ".part")
-        partial.delete()
-        try {
-            val request = Request.Builder().url(url).build()
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("APK download failed: HTTP ${response.code}")
-                val digest = MessageDigest.getInstance("SHA-256")
-                var total = 0L
-                response.body.byteStream().use { input ->
-                    partial.outputStream().use { output ->
-                        val buffer = ByteArray(64 * 1024)
-                        while (true) {
-                            val count = input.read(buffer)
-                            if (count < 0) break
-                            total += count
-                            if (total > MAX_APK_BYTES) throw IOException("APK exceeds size limit")
-                            digest.update(buffer, 0, count)
-                            output.write(buffer, 0, count)
+        val partial = File(destination.path + ".${UUID.randomUUID()}.part")
+        val request = Request.Builder().url(url).build()
+        return suspendCancellableCoroutine { continuation ->
+            val call = client.newCall(request)
+            continuation.invokeOnCancellation { call.cancel() }
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    partial.delete()
+                    if (continuation.isActive) continuation.resumeWithException(e)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        response.use {
+                            if (!response.isSuccessful) throw IOException("APK download failed: HTTP ${response.code}")
+                            val totalBytes = response.body.contentLength().takeIf { it > 0 } ?: offer.sizeBytes
+                            val startedAt = System.nanoTime()
+                            var lastUpdateAt = startedAt
+                            var bytesRead = 0L
+                            val digest = MessageDigest.getInstance("SHA-256")
+                            onProgress(UpdateDownloadProgress(0, totalBytes, 0))
+                            response.body.byteStream().use { input ->
+                                partial.outputStream().use { output ->
+                                    val buffer = ByteArray(64 * 1024)
+                                    while (true) {
+                                        if (!continuation.isActive) throw CancellationException("APK download cancelled")
+                                        val count = input.read(buffer)
+                                        if (count < 0) break
+                                        bytesRead += count
+                                        if (bytesRead > MAX_APK_BYTES) throw IOException("APK exceeds size limit")
+                                        digest.update(buffer, 0, count)
+                                        output.write(buffer, 0, count)
+                                        val now = System.nanoTime()
+                                        if (now - lastUpdateAt >= PROGRESS_INTERVAL_NANOS || bytesRead == totalBytes) {
+                                            onProgress(UpdateDownloadProgress(bytesRead, totalBytes, (now - startedAt) / 1_000_000))
+                                            lastUpdateAt = now
+                                        }
+                                    }
+                                }
+                            }
+                            if (!continuation.isActive) throw CancellationException("APK download cancelled")
+                            val actual = digest.digest().joinToString("") { "%02x".format(it) }
+                            if (actual != expected) throw IOException("APK SHA-256 differs from GitHub release")
+                            destination.delete()
+                            if (!partial.renameTo(destination)) throw IOException("Could not save APK")
+                            onProgress(UpdateDownloadProgress(bytesRead, totalBytes, (System.nanoTime() - startedAt) / 1_000_000))
+                            if (continuation.isActive) continuation.resume(destination)
                         }
+                    } catch (error: Exception) {
+                        if (continuation.isActive) continuation.resumeWithException(error)
+                    } finally {
+                        partial.delete()
                     }
                 }
-                val actual = digest.digest().joinToString("") { "%02x".format(it) }
-                if (actual != expected) throw IOException("APK SHA-256 differs from GitHub release")
-            }
-            destination.delete()
-            if (!partial.renameTo(destination)) throw IOException("Could not save APK")
-            destination
-        } finally {
-            partial.delete()
+            })
         }
     }
 
@@ -103,6 +148,7 @@ class UpdateChecker(private val context: Context, private val installedVersion: 
         const val REPOSITORY_URL = "https://github.com/MrKot-Anon/MD3-Agent"
         private const val API_URL = "https://api.github.com/repos/MrKot-Anon/MD3-Agent/releases/latest"
         private const val MAX_APK_BYTES = 250L * 1024 * 1024
+        private const val PROGRESS_INTERVAL_NANOS = 200_000_000L
     }
 }
 

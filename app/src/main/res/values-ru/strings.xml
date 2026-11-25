@@ -1107,6 +1107,10 @@
     <string name="callout_summary">Кратко</string>
     <string name="details_default_summary">Подробности</string>
     <string name="update_downloading">Загрузка обновления…</string>
+    <string name="update_progress_percent">Загрузка: %1$d%%</string>
+    <string name="update_progress_eta">Осталось примерно %1$d мин %2$d с</string>
+    <string name="update_progress_eta_calculating">Подсчёт оставшегося времени…</string>
+    <string name="update_download_cancel">Отмена</string>
     <string name="update_download_failed">Не удалось загрузить обновление</string>
     <string name="update_install_permission_needed">Разрешите этому приложению устанавливать обновления в настройках Android</string>
     <string name="update_install_failed">Не удалось открыть установщик Android</string>
